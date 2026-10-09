@@ -12,7 +12,7 @@ OUTPUT_DIR = Path(os.getenv("SPRITEFORGE_OUTPUT", DATA_DIR / "output"))
 CACHE_DIR = Path(os.getenv("SPRITEFORGE_CACHE", DATA_DIR / "cache"))
 
 FRONTEND_DIR = ROOT / "frontend"
-SITE_DIR = ROOT / "site"
+SITE_DIR = ROOT / "docs"
 
 for _p in (DATA_DIR, MODELS_DIR, OUTPUT_DIR, CACHE_DIR):
     _p.mkdir(parents=True, exist_ok=True)
