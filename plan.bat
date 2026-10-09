@@ -10,7 +10,7 @@ if not exist ".venv\Scripts\python.exe" (
     exit /b 1
 )
 
-echo Открываю http://127.0.0.1:8420/plan.html
-start "" http://127.0.0.1:8420/plan.html
+echo Открываю http://127.0.0.1:8420/plan/
+start "" http://127.0.0.1:8420/plan/
 
 ".venv\Scripts\python.exe" run.py --no-browser

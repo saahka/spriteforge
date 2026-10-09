@@ -13,6 +13,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import (
     FileResponse,
     JSONResponse,
+    RedirectResponse,
     Response,
     StreamingResponse,
 )
@@ -385,6 +386,15 @@ def reset_plan() -> dict:
 
 
 # ----------------------------------------------------------- static site ----
+
+if config.SITE_DIR.exists():
+    app.mount("/plan", StaticFiles(directory=str(config.SITE_DIR), html=True), name="plan")
+
+
+@app.get("/plan.html")
+def plan_page() -> Response:
+    return RedirectResponse(url="/plan/", status_code=307)
+
 
 if config.FRONTEND_DIR.exists():
     app.mount("/", StaticFiles(directory=str(config.FRONTEND_DIR), html=True), name="frontend")

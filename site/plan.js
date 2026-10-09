@@ -137,6 +137,27 @@ function applyPayload(data) {
   }
 }
 
+function setupLinks() {
+  const link = $('#linkForge');
+  if (!link) return;
+  const host = location.hostname;
+  if (host === '127.0.0.1' || host === 'localhost') {
+    link.href = '/';
+    link.textContent = 'Генератор ассетов';
+  }
+}
+
+function probeStorage() {
+  try {
+    localStorage.setItem(STORE_KEY + '_probe', '1');
+    localStorage.removeItem(STORE_KEY + '_probe');
+    return true;
+  } catch (_) {
+    toast('Браузер не даёт сохранять данные. Прогресс не переживёт перезагрузку.', 'err');
+    return false;
+  }
+}
+
 async function load() {
   try {
     const res = await fetch('/api/plan', { headers: { 'Accept': 'application/json' } });
@@ -925,6 +946,8 @@ async function init() {
   await load();
   rollStreak();
   bind();
+  setupLinks();
+  probeStorage();
 
   const sel = $('#customStage');
   sel.innerHTML = '<option value="inbox">— без этапа —</option>';

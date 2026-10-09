@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Планировщик — визуальная новелла</title>
+<title>Планировщик визуальной новеллы</title>
+<meta name="description" content="Пошаговый трекер создания визуальной новеллы: 11 этапов, 128 задач, задание дня и случайные челленджи." />
 <link rel="stylesheet" href="plan.css" />
 </head>
 <body>
@@ -17,10 +18,9 @@
         <p>Пошаговый трекер создания визуальной новеллы</p>
       </div>
       <span class="pill mode" id="storeMode" hidden title="Сервер недоступен — прогресс хранится только в этом браузере">локальный режим</span>
-    </div>
-    <div class="topbar-actions">
-      <a class="ghost" href="/">Генератор ассетов</a>
-      <button class="ghost" id="btnExport" title="Скачать data/plan.json">Экспорт</button>
+    </div>    <div class="topbar-actions">
+      <a class="ghost" id="linkForge" href="https://github.com/saahka/spriteforge">Исходники</a>
+      <button class="ghost" id="btnExport" title="Скачать план в JSON-файл">Экспорт</button>
       <button class="ghost" id="btnImport" title="Загрузить план из файла">Импорт</button>
       <button class="ghost danger" id="btnReset" title="Стереть весь прогресс">Сброс</button>
       <input type="file" id="fileImport" accept="application/json" hidden />
