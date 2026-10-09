@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.env.*
+
+# Данные приложения: модели, сгенерированные ассеты, логи, состояние планировщика
+data/
+
+# Node / редакторы
+node_modules/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Сборки
+build/
+dist/
+*.exe

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SpriteForge — генератор игровых ассетов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">◆</span>
+      <div>
+        <h1>SpriteForge</h1>
+        <p>Бесплатная локальная генерация спрайтов, фонов и персонажей</p>
+      </div>
+    </div>
+    <div class="status" id="status">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">подключение…</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ---------------------------------------------------- controls -->
+    <section class="panel controls">
+      <div class="tabs" id="catTabs"></div>
+
+      <label class="field">
+        <span class="label">Что рисуем?</span>
+        <textarea id="prompt" rows="3" placeholder="например: рыцарь в стальном шлеме с синим плащом"></textarea>
+        <div class="chips" id="promptChips"></div>
+      </label>
+
+      <div class="field">
+        <span class="label">Стиль отрисовки</span>
+        <div class="style-grid" id="styleGrid"></div>
+      </div>
+
+      <details class="adv" id="adv">
+        <summary>Расширенные настройки</summary>
+
+        <label class="field">
+          <span class="label">Дополнительные слова <em>(негатив)</em></span>
+          <input id="negative" type="text" placeholder="лишние детали, оружие в руке…" />
+        </label>
+
+        <label class="field">
+          <span class="label">Свои ключевые слова</span>
+          <input id="extraPrompt" type="text" placeholder="tattered cloak, gold trim" />
+        </label>
+
+        <div class="row">
+          <label class="field">
+            <span class="label">Стиль / база</span>
+            <select id="base"></select>
+          </label>
+          <label class="field">
+            <span class="label">Размер</span>
+            <select id="size"></select>
+          </label>
+        </div>
+
+        <div class="row">
+          <label class="field">
+            <span class="label">Шаги <output id="stepsOut"></output></span>
+            <input id="steps" type="range" min="1" max="60" value="28" />
+          </label>
+          <label class="field">
+            <span class="label">CFG <output id="cfgOut"></output></span>
+            <input id="cfg" type="range" min="0" max="15" step="0.5" value="6" />
+          </label>
+        </div>
+
+        <div class="row">
+          <label class="field">
+            <span class="label">Сид</span>
+            <input id="seed" type="text" placeholder="случайный" />
+          </label>
+          <label class="field">
+            <span class="label">Сколько штук</span>
+            <input id="batch" type="number" min="1" max="8" value="1" />
+          </label>
+        </div>
+
+        <div class="row">
+          <label class="field">
+            <span class="label">Сэмплер</span>
+            <select id="scheduler">
+              <option value="default">По умолчанию</option>
+              <option value="dpm++2m">DPM++ 2M Karras</option>
+              <option value="euler-a">Euler a</option>
+              <option value="euler">Euler</option>
+              <option value="dpm++sde">DPM++ SDE</option>
+              <option value="ddim">DDIM</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="label">Доп. LoRA</span>
+            <select id="extraLora"></select>
+          </label>
+        </div>
+
+        <div class="field">
+          <span class="label">Пост-обработка</span>
+          <div class="post-grid" id="postGrid"></div>
+        </div>
+
+        <div class="field">
+          <span class="label">Скорость</span>
+          <div class="speed-grid" id="speedGrid">
+            <label><input type="radio" name="speed" value="fast" /> Быстро (4 шага)</label>
+            <label><input type="radio" name="speed" value="normal" checked /> Нормально</label>
+            <label><input type="radio" name="speed" value="quality" /> Качество (50+ шагов)</label>
+          </div>
+        </div>
+
+        <div class="row" id="advancedNumbers">
+          <label class="field">
+            <span class="label">Размер спрайта (px)</span>
+            <input id="pixelSize" type="number" min="8" max="256" value="64" />
+          </label>
+          <label class="field">
+            <span class="label">Цветов в палитре</span>
+            <input id="paletteColors" type="number" min="2" max="64" value="16" />
+          </label>
+        </div>
+
+        <div class="row" id="sheetNumbers">
+          <label class="field">
+            <span class="label">Колонок</span>
+            <input id="sheetCols" type="number" min="1" max="8" value="4" />
+          </label>
+          <label class="field">
+            <span class="label">Рядов</span>
+            <input id="sheetRows" type="number" min="1" max="8" value="4" />
+          </label>
+        </div>
+      </details>
+
+      <button id="generate" class="primary">Сгенерировать</button>
+      <div class="hint" id="promptPreview"></div>
+    </section>
+
+    <!-- ------------------------------------------------------ result -->
+    <section class="panel stage">
+      <div class="stage-head">
+        <h2>Результат</h2>
+        <div class="stage-actions" id="resultActions" hidden>
+          <button id="dlPng" class="ghost">PNG</button>
+          <button id="dlWebp" class="ghost">WebP</button>
+          <button id="dlZip" class="ghost">ZIP</button>
+          <button id="dlJson" class="ghost">Мета</button>
+        </div>
+      </div>
+
+      <div class="viewer" id="viewer">
+        <div class="placeholder" id="placeholder">
+          <div class="ph-art">◈</div>
+          <p>Выберите стиль, опишите ассет и нажмите «Сгенерировать»</p>
+          <small>Первая генерация скачает модель — это занимает от 1 до 35 ГБ</small>
+        </div>
+        <img id="resultImg" alt="" hidden />
+        <div class="progress" id="progress" hidden>
+          <div class="bar"><i id="barFill"></i></div>
+          <span id="progressText">…</span>
+        </div>
+      </div>
+
+      <div class="frames" id="frames" hidden>
+        <span class="frames-label">Кадры спрайт-листа:</span>
+        <div class="frames-row" id="framesRow"></div>
+      </div>
+
+      <div class="meta" id="meta"></div>
+    </section>
+  </main>
+
+  <!-- ------------------------------------------------------- gallery -->
+  <section class="gallery-section">
+    <div class="gallery-head">
+      <h2>Галерея</h2>
+      <div class="gallery-filters" id="galleryFilters"></div>
+      <button id="reloadGallery" class="ghost">Обновить</button>
+    </div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <div class="toast" id="toast" hidden></div>
+</div>
+<script src="/app.js" type="module"></script>
+</body>
+</html>
